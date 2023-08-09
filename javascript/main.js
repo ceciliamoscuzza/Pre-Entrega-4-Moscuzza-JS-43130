@@ -1,80 +1,15 @@
+// Arrays conteniendo el carrito y el listado de productos
 let carrito = [];
+let productos = [];
 
-const productos = [
-  {
-    codigo: "a",
-    imagen: "imagenes/cataNac.png",
-    nombre: "Cata Nacional",
-    precio: 5000,
-  },
-  {
-    codigo: "b",
-    imagen: "imagenes/cataImp.png",
-    nombre: "Cata Importado",
-    precio: 8000,
-  },
-  {
-    codigo: "c",
-    imagen: "imagenes/cataAutor.png",
-    nombre: "Cata De autor",
-    precio: 12000,
-  },
-  {
-    codigo: "d",
-    imagen: "imagenes/cataMix.png",
-    nombre: "Cata Mix Premium",
-    precio: 16000,
-  },
-  {
-    codigo: "e",
-    imagen: "imagenes/w1.png",
-    nombre: "Whisky Habermas",
-    precio: 16000,
-  },
-  {
-    codigo: "f",
-    imagen: "imagenes/w2.png",
-    nombre: "Whisky Butler",
-    precio: 7990,
-  },
-  {
-    codigo: "g",
-    imagen: "imagenes/w3.png",
-    nombre: "Whisky Latour",
-    precio: 14000,
-  },
-  {
-    codigo: "h",
-    imagen: "imagenes/w4.png",
-    nombre: "Whisky Zizek",
-    precio: 8562,
-  },
-  {
-    codigo: "i",
-    imagen: "imagenes/w5.png",
-    nombre: "Whisky Nussbaum",
-    precio: 18000,
-  },
-  {
-    codigo: "j",
-    imagen: "imagenes/w6.png",
-    nombre: "Whisky Taylor",
-    precio: 32000,
-  },
-  {
-    codigo: "k",
-    imagen: "imagenes/w7.png",
-    nombre: "Whisky Badiou",
-    precio: 45000,
-  },
-];
-
+// Actualizar la cantidad de items del carrito
 function actualizarCarrito() {
   document.getElementById(
     "carritoCantidad"
   ).innerHTML = `Tu carrito (${carrito.length})`;
 }
 
+// Leer el array del carrito desde el localStorage
 function leerCarrito() {
   let carritoLocal = JSON.parse(localStorage.getItem("carrito"));
   if (carritoLocal) {
@@ -83,27 +18,45 @@ function leerCarrito() {
   }
 }
 
+// Guardar el array del carrito en el localStorage
 function guardarCarrito() {
   let carritoJson = JSON.stringify(carrito);
   localStorage.setItem("carrito", carritoJson);
   actualizarCarrito();
 }
 
+// Agregar un producto al carrito
 function agregarCarrito(codigo, elemento) {
   let producto = buscarProductos(codigo);
   carrito.push(producto);
   guardarCarrito();
   elemento.innerHTML = "Agregado!";
+  Swal.fire({
+    position: "bottom-end",
+    icon: "success",
+    title: "Se agregó el ítem al carrito",
+    showConfirmButton: false,
+    timer: 1500,
+  });
 }
 
+// Eliminar un producto del carrito
 function eliminarCarrito(codigo) {
   let producto = buscarCarrito(codigo);
   let indice = carrito.indexOf(producto);
   carrito.splice(indice, 1);
   guardarCarrito();
   generarCarrito();
+  Swal.fire({
+    position: "bottom-end",
+    icon: "info",
+    title: "Se eliminó el ítem del carrito",
+    showConfirmButton: false,
+    timer: 1500,
+  });
 }
 
+// Buscar un producto basado en el código
 function buscarProductos(codigo) {
   let resultado = productos.find(
     (producto) => producto.codigo === codigo.toLowerCase()
@@ -111,6 +64,7 @@ function buscarProductos(codigo) {
   return resultado;
 }
 
+// Buscar un ítem del carrito basado en el código
 function buscarCarrito(codigo) {
   let resultado = carrito.find(
     (producto) => producto.codigo === codigo.toLowerCase()
@@ -118,13 +72,30 @@ function buscarCarrito(codigo) {
   return resultado;
 }
 
+// Finalizar la compra luego de validar la edad del usuario
 function finalizarCompra() {
-  carrito = [];
-  guardarCarrito();
-  generarCarrito();
-  document.getElementById("carritoTotal").innerHTML =
-    "Compra finalizada, gracias por elegirnos!" +
-    "<div><a href='index.html'>Volver al inicio</a></div>";
+  if (!document.getElementById("confirmacionEdad").checked) {
+    Swal.fire({
+      icon: "error",
+      title: "Debés ser mayor de edad para continuar.",
+    });
+    return;
+  }
+  document.getElementById("spinner").style.display = "block";
+  setTimeout(() => {
+    carrito = [];
+    guardarCarrito();
+    generarCarrito();
+    Swal.fire({
+      icon: "success",
+      title: "Compra finalizada!",
+    });
+    document.getElementById("carritoTotal").innerHTML =
+      "Gracias por elegirnos!" +
+      "<div><a href='index.html'>Volver al inicio</a></div>";
+    document.getElementById("spinner").style.display = "none";
+  }, 1000);
 }
 
+// Inicialización
 leerCarrito();

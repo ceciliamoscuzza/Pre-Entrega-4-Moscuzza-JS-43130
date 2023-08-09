@@ -89,6 +89,28 @@ li {
   background-color: #543527;
 }
 
+.confirmacion-edad {
+  padding: 16px 0;
+}
+
+#spinner {
+  display: none;
+  background: rgba(255, 255, 255, 0.5);
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#spinner span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -16px;
+  margin-top: -16px;
+}
+
 footer {
   background-color: #442517;
   padding: 1rem;
