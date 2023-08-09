@@ -69,54 +69,6 @@ const productos = [
   },
 ];
 
-function generarCatalogo() {
-  if (!document.getElementById("catalogo")) return;
-  document.getElementById("catalogo").innerHTML = "";
-  productos.forEach((producto) => {
-    let html = generarProductoHtml(producto);
-    document.getElementById("catalogo").innerHTML += html;
-  });
-}
-
-function generarProductoHtml(producto) {
-  return `
-  <div class="lista-item">
-    <div class="imagen"><img src="${producto.imagen}" /></div>
-    <div><p>${producto.nombre}</p></div>
-    <div><p>$ ${producto.precio}</p></div>
-    <div><button onclick="agregarCarrito('${producto.codigo}', this)">Agregar al carrito</button></div>
-  </div>
-         `;
-}
-
-function generarCarrito() {
-  if (!document.getElementById("carrito")) return;
-  document.getElementById("carrito").innerHTML = "";
-  document.getElementById("carritoTotal").innerHTML = "";
-  carrito.forEach((producto) => {
-    let html = generarCarritoHtml(producto);
-    document.getElementById("carrito").innerHTML += html;
-  });
-  if (carrito.length > 0) {
-    const cata = new Compra(carrito);
-    document.getElementById("carritoTotal").innerHTML = `
-    <div>Tu experiencia suma un total de: $ ${cata.obtenerSubtotal()}</div>
-    <div><button class="boton" onclick="finalizarCompra()">Finalizar compra</button></div>
-           `;
-  }
-}
-
-function generarCarritoHtml(producto) {
-  return `
-  <div class="lista-item">
-    <div class="imagen"><img src="${producto.imagen}" /></div>
-    <div><p>${producto.nombre}</p></div>
-    <div><p>$ ${producto.precio}</p></div>
-    <div><button onclick="eliminarCarrito('${producto.codigo}')">Eliminar del carrito</button></div>
-  </div>
-         `;
-}
-
 function actualizarCarrito() {
   document.getElementById(
     "carritoCantidad"
@@ -175,49 +127,4 @@ function finalizarCompra() {
     "<div><a href='index.html'>Volver al inicio</a></div>";
 }
 
-function catar() {
-  let codigo = prompt(
-    "Ingresa el código de tu Cata Experience ó Cata Experience a casa:"
-  );
-  let cataElegida = buscarProductos(codigo);
-  if (cataElegida !== undefined) {
-    carrito.push(cataElegida);
-    alert(
-      "🥃" + cataElegida.nombre + " se agregó a tu Carrito de Experiencias 🥃"
-    );
-    let respuesta = confirm("¿Querés sumar otra experiencia?");
-    if (respuesta === true) {
-      catar();
-    } else {
-      console.table(carrito);
-      terminarCompra();
-    }
-  } else {
-    alert("Ítem no encontrado. Por favor ingresá otra opción.");
-    catar();
-  }
-}
-
-function comenzar() {
-  let usuario = prompt("Ingrese su Nombre y apellido:");
-  console.log("🥃👋🏼Bienvenidx " + usuario);
-  let edad = prompt("Ingrese su edad:");
-
-  if (edad >= 21) {
-    console.log(
-      "👍🏼Como sos mayor de edad, podés elegir entre las siguientes experiencias, chequealas en nuestra web: (a,b,c,d,e,f,g,h,i,j,k)"
-    );
-    let experiencia = alert(
-      "Elegí tu CataExperience🥃declarando catar() en la consola"
-    );
-  } else {
-    alert(
-      "🚫No podemos sumarte a esta experiencia, tenés que ser mayor de edad🚫"
-    );
-  }
-}
-
-//comenzar();
-generarCatalogo();
 leerCarrito();
-generarCarrito();
